@@ -24,7 +24,7 @@
             <div class="col-auto ">
               <div class="card-body side-body d-flex flex-column justify-content-center align-items-center">
                 <SideBar :cropTriggered="cropTriggered" @rotaite-image-right="rotaiteImage(90)" @rotaite-image-left="rotaiteImage(-90)" @crop-triggered="toggleCrop"/>
-                <a class="btn mt-5 btn-outline-secondary" @click="submitCroppedImage" href="#" role="button">S</a>
+                <a class="btn mt-5 btn-outline-secondary" :class="{'disabled':!cropTriggered}" @click="submitCroppedImage" href="#" role="button">S</a>
               </div>
             </div>
         </div>
