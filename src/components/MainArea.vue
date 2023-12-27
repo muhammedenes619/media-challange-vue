@@ -107,7 +107,6 @@ export default {
           this.isVideoUploaded = true; // Set a flag to indicate video upload
           this.videoSrc = URL.createObjectURL(file); // Store video source for displaying in the UI
           this.videoFile=file
-          this.$emit('video-uploaded', this.isVideoUploaded);
 
         } else {
           // Handling other file types (if needed)
@@ -188,14 +187,12 @@ export default {
 
 
         // Read the resulting file
-        const data = ffmpeg.FS('readFile', outputFile);
-        // Use the data as needed, e.g., set it to a video element or create a download link
-        const videoSrc = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-          this.$refs.videoElement.src=videoSrc
-          this.videoSrc=videoSrc
-          this.trimStartPoint=0;
-          this.trimEndPoint=data.duration;
-
+          const data = ffmpeg.FS('readFile', outputFile);
+          const mergedVideoSrc = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+          this.videoFile=data
+          this.videoSrc=mergedVideoSrc
+          this.videoFile.src=mergedVideoSrc
+          this.isVideoUploaded=true
       } catch (error) {
         console.error('Error merging videos:', error);
         throw error;
@@ -231,13 +228,13 @@ export default {
         const data = ffmpeg.FS('readFile', outputFile);
           // Set the trimmed video data to the <video> element
           // this.$refs.uploadedFile.files[0] = data;
+          // Convert the trimmed video data to a Blob URL
+          const trimmedVideoSrc = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+          this.videoSrc=trimmedVideoSrc
+          this.videoFile.src=trimmedVideoSrc
+          this.videoFile.buffer=data.buffer
           
-          const videoSrc = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-          this.$refs.videoElement.src=videoSrc
-          this.videoSrc=videoSrc
-          this.trimStartPoint=0;
-          this.trimEndPoint=data.duration;
-            
+
       } catch (error) {
         console.error('Error during video trimming:', error);
         throw error;
@@ -246,10 +243,10 @@ export default {
 
     addToMergeList() {
       // Check if the video file exists
-      if (this.$refs.videoElement) {
+      if (this.videoFile) {
         // Add the video file to the list (you may have a separate list defined)
         
-        this.videoFile.src=this.videoSrc
+        // this.videoFile.src=this.videoSrc
         this.videoList.push(this.videoFile);
         // Reset the input file
         this.resetInput();
