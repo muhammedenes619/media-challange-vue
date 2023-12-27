@@ -190,11 +190,11 @@ export default {
         // Read the resulting file
         const data = ffmpeg.FS('readFile', outputFile);
         // Use the data as needed, e.g., set it to a video element or create a download link
-        this.videoFile=data;
-        this.videoSrc = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-        this.trimStartPoint=0;
-        this.trimEndPoint=data.duration;
-        this.isVideoUploaded=true
+        const videoSrc = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+          this.$refs.videoElement.src=videoSrc
+          this.videoSrc=videoSrc
+          this.trimStartPoint=0;
+          this.trimEndPoint=data.duration;
 
       } catch (error) {
         console.error('Error merging videos:', error);
